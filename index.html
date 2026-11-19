@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBF7F1">
+<title>12 种职业人格测评 · 有些工作真的会把人越养越好</title>
+<style>
+  :root{
+    --bg:#FBF7F1; --ink:#3D3128; --muted:#8B7A6B; --line:#EADFD1;
+    --card:#FFFDF9; --accent:#D97742; --accent-soft:#F6E3D2; --gold:#E8B45C;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; letter-spacing:.2px;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{max-width:520px;margin:0 auto;padding:0 22px 60px;min-height:100vh;}
+  .screen{animation:fade .45s ease both;}
+  .hidden{display:none !important;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h1,h2,h3{font-family:"Songti SC","Source Han Serif SC",Georgia,serif;font-weight:700;letter-spacing:.5px;}
+
+  /* ---------- 封面 ---------- */
+  #cover{padding-top:64px;}
+  .kicker{
+    display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent);
+    border:1px solid var(--accent-soft);background:#fff;border-radius:999px;padding:5px 14px;margin-bottom:26px;
+  }
+  #cover h1{font-size:34px;line-height:1.45;margin:0 0 22px;}
+  #cover h1 em{font-style:normal;color:var(--accent);}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 34px;}
+  .cover-list{list-style:none;padding:0;margin:0 0 36px;}
+  .cover-list li{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;margin-bottom:10px;font-size:14px;color:var(--muted);
+  }
+  .cover-list b{color:var(--ink);font-weight:600;}
+  .btn{
+    display:block;width:100%;border:none;border-radius:14px;padding:16px;font-size:16px;
+    font-family:inherit;font-weight:600;letter-spacing:1px;cursor:pointer;
+    background:var(--ink);color:#FFF9F0;transition:.2s;
+  }
+  .btn:active{transform:scale(.985);background:#2C231C;}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);}
+  .tiny{font-size:11.5px;color:#A79684;line-height:1.7;margin-top:18px;}
+
+  /* ---------- 答题 ---------- */
+  #quiz{padding-top:26px;}
+  .qbar{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:1px;}
+  .track{height:3px;background:#EDE2D3;border-radius:3px;margin:14px 0 40px;overflow:hidden;}
+  .track i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .3s ease;}
+  .qtext{font-size:21px;line-height:1.65;font-family:"Songti SC","Source Han Serif SC",Georgia,serif;margin:0 0 32px;min-height:100px;}
+  .opt{
+    display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:15px 18px;margin-bottom:11px;font-size:15px;color:var(--ink);
+    font-family:inherit;cursor:pointer;transition:.16s;
+  }
+  .opt:active{border-color:var(--accent);background:var(--accent-soft);}
+  .opt.on{border-color:var(--accent);background:var(--accent-soft);}
+  .qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:26px;}
+  .link{background:none;border:none;color:var(--muted);font-size:13px;font-family:inherit;cursor:pointer;padding:6px 0;}
+  .link:disabled{opacity:.3;}
+
+  /* ---------- 加载 ---------- */
+  #loading{padding-top:120px;text-align:center;}
+  .spinner{
+    width:44px;height:44px;margin:0 auto 26px;border:2px solid var(--accent-soft);
+    border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #loading p{color:var(--muted);font-size:14px;}
+
+  /* ---------- 结果 ---------- */
+  #result{padding-top:34px;}
+  .r-kicker{font-size:12px;letter-spacing:2px;color:var(--accent);margin-bottom:10px;}
+  .r-code{
+    font-family:Georgia,serif;font-size:13px;letter-spacing:3px;color:var(--muted);
+    border:1px solid var(--line);border-radius:6px;padding:3px 9px;display:inline-block;margin-bottom:14px;background:#fff;
+  }
+  .r-name{font-size:32px;margin:0 0 10px;line-height:1.4;}
+  .r-slogan{font-size:15px;color:var(--accent);margin:0 0 30px;font-weight:600;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;margin-bottom:16px;}
+  .panel h3{font-size:16px;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .panel h3::before{content:"";width:4px;height:15px;background:var(--accent);border-radius:2px;display:inline-block;}
+  .panel p{margin:0;font-size:14.5px;color:#5B4B3F;line-height:1.85;}
+  .radar-wrap{display:flex;flex-direction:column;align-items:center;}
+  .radar-wrap svg{width:100%;max-width:280px;height:auto;}
+  .index-row{display:flex;align-items:center;gap:18px;margin-bottom:6px;}
+  .index-num{font-family:Georgia,serif;font-size:44px;font-weight:700;color:var(--accent);line-height:1;}
+  .index-num small{font-size:14px;color:var(--muted);font-weight:400;}
+  .index-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{font-size:12.5px;padding:6px 13px;border-radius:999px;background:#F4EBE0;color:#6B5847;}
+  .tag.gold{background:#FBF0DA;color:#9A6E17;}
+  .career{font-size:14px;color:#5B4B3F;line-height:2.1;}
+  .career span{display:inline-block;border-bottom:1px dashed var(--line);margin-right:12px;}
+  .two{display:grid;grid-template-columns:1fr;gap:16px;}
+  .col{border-radius:16px;padding:18px 18px 16px;}
+  .col.up{background:#F3F7EF;border:1px solid #DDE8D5;}
+  .col.down{background:#FAF0EC;border:1px solid #F0DCD2;}
+  .col h4{margin:0 0 10px;font-size:14px;letter-spacing:.5px;}
+  .col.up h4{color:#4F7440;}
+  .col.down h4{color:#B0603E;}
+  .col ul{margin:0;padding-left:16px;font-size:13.5px;color:#5B4B3F;line-height:1.95;}
+  .tension{background:#FFF8E9;border:1px solid #F0E0BB;border-radius:14px;padding:16px 18px;font-size:13.5px;color:#7A5F2B;line-height:1.85;margin-bottom:16px;}
+  .foot{margin-top:28px;border-top:1px solid var(--line);padding-top:20px;}
+  .foot h5{font-size:12px;letter-spacing:1.5px;color:var(--muted);margin:0 0 10px;font-weight:600;}
+  .foot ul{margin:0;padding-left:16px;font-size:11.5px;color:#A79684;line-height:1.85;}
+  .copied{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:rgba(61,49,40,.92);color:#FFF9F0;font-size:13px;padding:10px 20px;border-radius:999px;opacity:0;transition:.3s;pointer-events:none;}
+  .copied.on{opacity:1;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 封面 -->
+  <section id="cover" class="screen">
+    <div class="kicker">12 种职业人格 · 32 题 · 约 5 分钟</div>
+    <h1>有些工作<br>真的会把人<em>越养越好</em></h1>
+    <p class="lead">不是所有工作都在消耗你。<br>有的工作，会把你的天赋越养越大；<br>有的工作，做一天就少一点自己。</p>
+    <ul class="cover-list">
+      <li><b>不是玄学：</b>题目依据霍兰德职业兴趣理论、大五人格模型、施恩职业锚理论设计</li>
+      <li><b>不是标签：</b>测出你的兴趣结构 + 人格底色 + 内在驱动力，三层合一</li>
+      <li><b>不只是结果：</b>给出适合你的职业方向，也给出会耗干你的岗位特征</li>
+    </ul>
+    <button class="btn" id="startBtn">开始测评</button>
+    <p class="tiny">本测评为自我探索工具，非临床心理诊断工具，结果不构成职业决策的唯一依据。<br>请按第一直觉作答，不要反复斟酌。</p>
+  </section>
+
+  <!-- 答题 -->
+  <section id="quiz" class="screen hidden">
+    <div class="qbar"><span id="qidx">01 / 32</span><span id="qhint">按第一直觉选</span></div>
+    <div class="track"><i id="qbar"></i></div>
+    <p class="qtext" id="qtext"></p>
+    <div id="opts"></div>
+    <div class="qfoot">
+      <button class="link" id="backBtn">← 上一题</button>
+      <button class="link" id="quitBtn">重新开始</button>
+    </div>
+  </section>
+
+  <!-- 加载 -->
+  <section id="loading" class="screen hidden">
+    <div class="spinner"></div>
+    <p id="loadingTxt">正在解读你的兴趣结构…</p>
+  </section>
+
+  <!-- 结果 -->
+  <section id="result" class="screen hidden"></section>
+</div>
+<div class="copied" id="toast">已复制</div>
+
+<script>
+/* ============ 题库 ============ */
+/* d: 维度。R/I/A/S/E/C = 霍兰德六型；X=外向 N=情绪敏感 O=开放 G=宜人 D=尽责；M1-M4 = 职业锚 */
+const QS = [
+  {d:'R', t:'比起讲道理，我更愿意直接上手，把东西修好、装好、做出实物。'},
+  {d:'I', t:'我会忍不住把一个复杂问题彻底搞清楚，否则心里过不去。'},
+  {d:'A', t:'我经常冒出别人没想到的点子，也常被说“脑洞大”。'},
+  {d:'X', t:'和一整群人待一天，我会越聊越有精神，而不是想躲起来。'},
+  {d:'C', t:'我做事习惯有计划、有条理，最好有个清单。'},
+  {d:'S', t:'帮别人解开一个困惑，比我自己做成一件小事更有成就感。'},
+  {d:'E', t:'我喜欢说服别人，也享受把一件事推动着往前走。'},
+  {d:'N', t:'事情超出预期时，我很容易紧张，并且反复回想。'},
+  {d:'I', t:'看到一组数据，我会想找规律、验证它到底靠不靠谱。'},
+  {d:'A', t:'我对文字、画面、声音、气氛这类东西格外敏感。'},
+  {d:'C', t:'细节出错会让我很不舒服，我会想改到完全准确为止。'},
+  {d:'O', t:'新方法、新领域会让我好奇，哪怕它眼下没什么用。'},
+  {d:'E', t:'有竞争和挑战的场合让我兴奋，而不是让我想退。'},
+  {d:'R', t:'我不介意工作环境有机器、工具、户外或者现场。'},
+  {d:'M1', t:'我最在意的，是把某一门本事做到别人替代不了。'},
+  {d:'S', t:'我享受把自己会的东西讲清楚、教会别人。'},
+  {d:'D', t:'我答应过的事一定会做到，不喜欢半途而废。'},
+  {d:'I', t:'比起“大家都这么做”，我更想知道“为什么是这样”。'},
+  {d:'A', t:'有空间发挥我自己的想法，比按标准流程做更让我兴奋。'},
+  {d:'C', t:'规则清晰、流程明确的环境，反而让我更安心、更高效。'},
+  {d:'X', t:'我习惯主动开口，不太害怕和陌生人搭话。'},
+  {d:'E', t:'我愿意为更大的回报，承担相应更大的风险。'},
+  {d:'N', t:'我常担心自己做得不够好，哪怕别人说已经没问题了。'},
+  {d:'S', t:'我常常是那个主动关心别人情绪的人。'},
+  {d:'M2', t:'我最在意的，是自己的时间安排和工作方式由我自己决定。'},
+  {d:'O', t:'我喜欢尝试没做过的事，受不了长期一成不变。'},
+  {d:'R', t:'结果能摸得着、看得见的工作，会让我更踏实。'},
+  {d:'G', t:'我愿意为了照顾别人的感受，做出一些让步。'},
+  {d:'D', t:'即使没人监督，我也会按自己的标准把事情做完。'},
+  {d:'M3', t:'我最在意的，是收入和路径稳定、可预期。'},
+  {d:'G', t:'我很难对人强硬，即使我认为自己是有道理的。'},
+  {d:'M4', t:'我最在意的，是能做有挑战、能证明自己的事。'}
+];
+
+const SCALE = ['完全不像我','不太像我','说不好','比较像我','非常像我'];
+
+const DIM_NAME = {R:'现实型',I:'研究型',A:'艺术型',S:'社会型',E:'企业型',C:'常规型'};
+const HEX = ['R','I','A','S','E','C'];
+const NEXT = {R:['I','C'], I:['R','A'], A:['I','S'], S:['A','E'], E:['S','C'], C:['E','R']};
+
+/* ============ 12 型数据 ============ */
+const TYPES = {
+'R-I':{
+    name:'拆解匠人',
+    slogan:'把复杂的东西拆开、看懂，再装回去。',
+    desc:'你是那种看到一台机器、一套流程、一个麻烦，第一反应就是“我打开看看”的人。你不喜欢空谈，也不满足于“只会用、不知道为什么能用”。你的可靠来自手感，你的底气来自原理。别人卡住的地方，往往正是你的主场——因为你不怕把它拆到散架。',
+    strengths:['结构直觉','动手落地','故障定位'],
+    careers:['硬件/设备工程师','工业与产品设计','医疗器械技术支持','汽车机械技术专家','实验室技术员','影视摄影器材师','技术与专利合规','职业院校实训教师'],
+    feed:['有实物或真实系统可以碰、可以改','允许拆解、试错、反复迭代','成果看得见、摸得着、当场可验'],
+    drain:['长期只做汇报与对齐，不接触实际对象','流程频繁变动却不给解释','纯线上、纯文字的虚拟工作'],
+    action:'挑一件你天天在用的设备或系统，写一份“它为什么这样设计”的拆解笔记。不用长，但要写到你敢公开给人看。'
+  },
+  'I-R':{
+    name:'深潜工程师',
+    slogan:'越往深处走，你越安静，也越有力量。',
+    desc:'你对“搞清楚”有近乎固执的兴致。别人满足于跑通，你要知道边界在哪、什么时候会失效。你不太爱在人群里表现自己，但一旦谈起你研究过的东西，能说到别人走神。你的价值从来不体现在嗓门，而体现在——这件事绕不过你的判断。',
+    strengths:['深度钻研','严谨验证','抗干扰'],
+    careers:['算法与数据工程','研发工程师','量化研究','医药与食品研发','标准与合规研究','技术审计','专利代理','高校科研与实验岗'],
+    feed:['有长周期、可深度专注的任务','评价看结果不看坐班时长','有清晰、可拆解的智力挑战'],
+    drain:['会议密集、需要高频社交的岗位','被要求快速给出“感觉差不多”的结论','成果必须靠表达包装才能被看见'],
+    action:'选一个你真正感兴趣的窄问题，完整走一次“查资料→提假设→做验证→写结论”的闭环，哪怕只有两页纸。'
+  },
+  'I-A':{
+    name:'思想建筑师',
+    slogan:'你不生产答案，你生产看世界的新角度。',
+    desc:'你的乐趣在于把散乱的信息拼成一个能被理解的结构。你既能坐得住冷板凳，也忍不了一个平庸的解释。你适合做那种“你先想明白了，别人才能往前走”的工作——研究、内容、策略、洞察。你的产出不是体力，是判断力。',
+    strengths:['概念化能力','信息整合','洞察表达'],
+    careers:['行业研究与战略分析','内容策划与主编','图书与出版编辑','品牌策略','用户研究','政策研究','课程研发','文化项目策展'],
+    feed:['允许长时间思考与写作，不被切碎','能接触一手信息而不是二手结论','你的判断被当作决策依据'],
+    drain:['只执行、不给思考空间','内容被切成碎片活赶工','唯一考核指标是流量'],
+    action:'给自己定一个“每月一篇深度长文”的公开输出计划。写什么不重要，重要的是让思考有出口。'
+  },
+  'A-I':{
+    name:'灵感炼金师',
+    slogan:'你的脑子里有一间实验室，专门试验“如果这样呢”。',
+    desc:'你不缺想法，缺的常常是让想法落地的秩序。你对质感、语言、氛围、结构有天然的敏感，又忍不住追问背后的逻辑。你做出来的东西往往“有点不一样”——那种不一样不是装饰，是你真的想过。',
+    strengths:['创意密度','审美判断','跨界联想'],
+    careers:['视觉与交互设计','文案与创意','影视编导','游戏策划','产品设计','艺术教育','独立创作','展览与空间叙事'],
+    feed:['有自主创作空间，不是纯执行','被允许试错，允许一次做不好','作品署你的名字'],
+    drain:['纯执行改稿、无解释的反复修改','只看数量、不看质量的流水线','创意被当成可有可无的加分项'],
+    action:'选定一个你最在意的母题，用三种不同媒介各做一版，观察自己在哪种表达里最顺手——那就是你该主攻的方向。'
+  },
+  'A-S':{
+    name:'情绪造梦者',
+    slogan:'你能把看不见的情绪，做成别人看得见的东西。',
+    desc:'你对人的情绪和气氛极度敏锐，也总想把它表达出来。你既能共情，又能创作，是那种“写出来的话正好是别人说不出口的话”的人。你的作品天然带人味，这在效率和模板横行的时代，是很难被替代的天赋。',
+    strengths:['情绪洞察','共情表达','氛围营造'],
+    careers:['内容创作与自媒体','品牌与社群运营','教育与培训','心理咨询相关（需专业资质）','活动策划','公益传播','文案策划','艺术疗愈'],
+    feed:['与人真实接触，看得见反馈','作品能被具体的人看到并回应','允许慢工出细活'],
+    drain:['高度商业化、纯数据导向','长期处理纠纷、对抗与投诉','创作被要求“照着爆款抄”'],
+    action:'连续 21 天，每天记一句“今天谁的情绪被我读懂了”。三周后你会发现，你已经攒出了一个可以发布的小系列。'
+  },
+  'S-A':{
+    name:'共情表达者',
+    slogan:'你说的每句话，都在替别人把心里的话说出来。',
+    desc:'你的第一反应永远是人。你愿意听，也听得懂。你的表达不带压迫感，却能让对方松一口气。在需要信任、需要沟通、需要把复杂的事讲明白的场合里，你天生占优势——因为别人愿意对你讲真话。',
+    strengths:['倾听共情','温和说服','关系维护'],
+    careers:['教师与讲师','HR与组织发展','客户成功','心理咨询（需资质）','医务社工','企业文化','用户社群运营','调解与协商'],
+    feed:['长期陪伴式的关系，而不是一次性交易','能看到对方因你而发生的改变','团队氛围友善、不必时时提防'],
+    drain:['纯数字考核、把人当流量','需要强硬施压、催收式的角色','高对抗、互相甩锅的环境'],
+    action:'找一个你已经在帮的人，把“你是怎么帮的”整理成可复用的方法。你缺的从来不是善意，是把善意变成产品的能力。'
+  },
+  'S-E':{
+    name:'人心连接者',
+    slogan:'你不是在卖东西，你是在帮人做决定。',
+    desc:'你擅长把“人”和“事”接起来。你能听懂对方真正要什么，也敢往前推一步。你在人群里有天然的组织力，既让人舒服，又能把事做成。你最大的本钱不是话术，是别人愿意信你。',
+    strengths:['需求洞察','关系推动','组织协调'],
+    careers:['销售与商务拓展','招聘与猎头','教育与培训顾问','社群主理人','市场推广','公关','保险与财富顾问','创业合伙人'],
+    feed:['高频与人打交道，不是对着屏幕','努力与回报直接挂钩','有决定权、也有试错空间'],
+    drain:['长期单人作业','流程僵化、不给任何空间','成果被平均分配、做多做少一个样'],
+    action:'挑 20 个你认识的人，写下“他们最近在为什么发愁”。写完你会发现，机会一直摆在那儿，只是没人替你把它翻译成生意。'
+  },
+  'E-S':{
+    name:'影响型教练',
+    slogan:'你推着人往前走，也陪着人走过去。',
+    desc:'你有目标感，但不冷。你能定方向、扛压力，也愿意照顾队伍的情绪。你不喜欢空转，最舒服的状态是一群人因为你的推动，真的把一件事做成了。你既能上桌谈事，也能坐下来听人说话。',
+    strengths:['目标驱动','带队能力','情绪稳定输出'],
+    careers:['团队管理','项目管理','教育与培训管理','销售管理','运营负责人','咨询顾问','创业','公益项目负责人'],
+    feed:['有明确目标与决策权','团队能打、不用天天救火','成长速度和成绩看得见'],
+    drain:['无权无责的协调岗','层层审批、反复内耗','只让你扛事、不给你人'],
+    action:'主动接一个需要你带 3 个人、2 周内出结果的小项目。你会很快看清自己缺的到底是哪一块能力。'
+  },
+  'E-C':{
+    name:'目标推动者',
+    slogan:'你要的不是过程漂亮，是结果到位。',
+    desc:'你务实、直接、结果导向。你能把混乱的局面理成步骤，也能把步骤推成结果。你不怕谈利益，也不怕做决定。别人还在犹豫的时候，你已经在算下一步了。你的效率，本身就是一种稀缺。',
+    strengths:['决策力','资源整合','结果闭环'],
+    careers:['商务拓展','项目经理','电商与运营操盘','投资与融资','企业法务与合规管理','供应链管理','区域负责人','创业'],
+    feed:['目标清晰、考核明确','有资源调配权，不必事事求人','回报与结果直接挂钩'],
+    drain:['只走流程、不问结果','层层汇报却没有决策权','长期做支持性、被安排的角色'],
+    action:'用一页纸写下你手上（或者一直想做）的一件事：目标是什么、杠杆点在哪、什么情况下必须止损。写完就动手。'
+  },
+  'C-E':{
+    name:'秩序经营者',
+    slogan:'你把混乱变成一套能真正跑起来的系统。',
+    desc:'你有强烈的秩序感，也不缺推动力。你能把规则、流程、数据整理得清清楚楚，还愿意为它争取资源、让它真正落地。你是那种“有你在，事情不会乱”的人——但你的野心不止于守成，你想让系统更好用。',
+    strengths:['体系建设','流程设计','风险预判'],
+    careers:['财务与审计','合规与风控','法务','行政与运营管理','数据分析','质量管理','供应链计划','政府与公共事务'],
+    feed:['规则清晰、权责明确','有权限把制度真正推下去','专业可以长期积累成壁垒'],
+    drain:['规则朝令夕改、今天一个说法明天一个说法','只让你背锅、不给授权','长期救火，永远在补漏洞'],
+    action:'挑一件你反复做的杂事，写成一份“谁拿到都能照着做”的 SOP。这是你最被低估的能力，把它显性化。'
+  },
+  'C-R':{
+    name:'精密执行者',
+    slogan:'别人觉得枯燥的地方，正是你出彩的地方。',
+    desc:'你对准确有近乎本能的坚持。你能在重复中保持稳定，也能在细节里挑出别人漏掉的问题。你不追风口，你把一件事做到没有差错——在这个人人求快的时代，这本身就是稀缺能力。',
+    strengths:['精度控制','稳定输出','细节风险识别'],
+    careers:['财会与税务','质量与检测','数据治理','医药与食品合规','档案与信息管理','合同与法务支持','精密制造','检验检测'],
+    feed:['标准清晰、结果可衡量','节奏稳定、不长期熬夜突发','专业能力被尊重，而不是被当工具'],
+    drain:['频繁临时插单、永远在赶','规则模糊、全靠自己猜','做对了没人看见，做错了全是你的'],
+    action:'为自己建一份“差错清单”，每次出错的真实原因都记一条。三个月后你会拿到一份只属于你的风险地图。'
+  },
+  'R-C':{
+    name:'实物秩序师',
+    slogan:'你让真实世界井井有条，而且经得起检查。',
+    desc:'你喜欢看得见、摸得着、说得清的秩序。设备、场地、库存、流程——凡是有实体的东西，你都能把它安排得妥妥当当。你的可靠不是态度问题，是能力问题：你确实能让混乱变得可控。',
+    strengths:['现场管理','实物统筹','稳定执行'],
+    careers:['生产与现场管理','仓储物流','设备运维','工程管理','连锁门店运营','活动执行','实验室管理','设施与后勤管理'],
+    feed:['有明确的场地、实物与目标','现场感强，能立刻看到进展','结果当场可验，不必反复汇报'],
+    drain:['长期坐在办公室写文案、做 PPT','目标模糊、没有验收标准','跨部门协调多于动手'],
+    action:'把你最熟悉的一个现场（工位、家、仓库、门店）按“动线最短”重排一次，把你改动的理由记下来——这就是你的方法论雏形。'
+  }
+};
+
+/* ============ 文案库 ============ */
+const TAG_EXT = v => v>=7 ? '人群充电型' : '独处回血型';
+const TAG_NEU = v => v>=7 ? '高感知型' : '钝感稳态型';
+const TAG_OPEN = v => v>=7 ? '新奇探索型' : '务实收敛型';
+const TAG_AGR = v => v>=7 ? '柔和协作型' : '锋利直给型';
+const TAG_CON = v => v>=7 ? '交付可靠型' : '弹性随性型';
+
+const ANCHOR = {
+  M1:{name:'专业深耕', line:'你需要一份能持续积累“别人替代不了”的手艺的工作。涨薪慢一点可以接受，但专业不能贬值。'},
+  M2:{name:'自主自由', line:'你需要对时间和方式有主导权。被管得太细的环境，会比你想象中更快耗掉你。'},
+  M3:{name:'稳定安全', line:'你需要可预期的收入与清晰的上升路径。先活下来再谈成长，这不是保守，是你的真实需求。'},
+  M4:{name:'挑战创造', line:'你需要不断有难题推着你走。太安逸的环境，反而会让你怀疑自己的价值。'}
+};
+
+/* ============ 状态 ============ */
+let cur = 0;
+const ans = new Array(QS.length).fill(null);
+
+const $ = id => document.getElementById(id);
+
+/* ============ 答题流程 ============ */
+$('startBtn').onclick = () => {
+  $('cover').classList.add('hidden');
+  $('quiz').classList.remove('hidden');
+  renderQ();
+};
+
+function renderQ(){
+  const q = QS[cur];
+  $('qidx').textContent = String(cur+1).padStart(2,'0') + ' / ' + QS.length;
+  $('qbar').style.width = ((cur)/QS.length*100) + '%';
+  $('qtext').textContent = q.t;
+  const box = $('opts');
+  box.innerHTML = '';
+  SCALE.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt' + (ans[cur]===i+1 ? ' on' : '');
+    b.textContent = s;
+    b.onclick = () => pick(i+1);
+    box.appendChild(b);
+  });
+  $('backBtn').disabled = cur===0;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pick(v){
+  ans[cur] = v;
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach((o,i)=>o.classList.toggle('on', i===v-1));
+  setTimeout(()=>{
+    if(cur === QS.length-1){ finish(); }
+    else { cur++; renderQ(); }
+  }, 220);
+}
+
+$('backBtn').onclick = () => { if(cur>0){ cur--; renderQ(); } };
+$('quitBtn').onclick = () => {
+  if(confirm('重新开始？当前作答记录会清空。')){
+    cur = 0; ans.fill(null);
+    $('quiz').classList.add('hidden');
+    $('result').classList.add('hidden');
+    $('cover').classList.remove('hidden');
+    window.scrollTo({top:0});
+  }
+};
+
+/* ============ 计分 ============ */
+function compute(){
+  const s = {R:0,I:0,A:0,S:0,E:0,C:0,X:0,N:0,O:0,G:0,D:0,M1:0,M2:0,M3:0,M4:0};
+  QS.forEach((q,i)=>{ s[q.d] += (ans[i]||3); });
+
+  // 主导兴趣 + 次主导
+  const rank = HEX.slice().sort((a,b)=> s[b]-s[a] || HEX.indexOf(a)-HEX.indexOf(b));
+  const dom = rank[0], sec = rank[1];
+
+  // 按霍兰德六边形相邻关系映射 12 型
+  const [n1,n2] = NEXT[dom];
+  let partner;
+  if(sec===n1) partner = n1;
+  else if(sec===n2) partner = n2;
+  else partner = (s[n1] >= s[n2]) ? n1 : n2;
+
+  // 六边形距离（1 相邻 / 2 相隔 / 3 相对）
+  const i1 = HEX.indexOf(dom), i2 = HEX.indexOf(sec);
+  const raw = Math.abs(i1-i2);
+  const dist = Math.min(raw, 6-raw);
+
+  // 职业锚
+  const anchors = ['M1','M2','M3','M4'];
+  const anchor = anchors.sort((a,b)=> s[b]-s[a])[0];
+
+  // 天赋复利指数（自建指标）
+  const interest = (s[dom]/15)*100;              // 主导兴趣饱和
+  const con = (s.D/10)*100;                       // 交付可靠性
+  const stable = ((10 - s.N)/10)*100;             // 情绪稳定性
+  const index = Math.round(0.5*interest + 0.25*con + 0.25*stable);
+
+  return {s, dom, sec, partner, dist, anchor, index, code: dom+'-'+partner};
+}
+
+/* ============ 渲染结果 ============ */
+const LOAD_TXT = [
+  '正在解读你的兴趣结构…',
+  '正在比对 12 种职业人格…',
+  '正在计算你的天赋复利…',
+  '正在整理会耗干你的岗位…'
+];
+
+function finish(){
+  $('quiz').classList.add('hidden');
+  $('loading').classList.remove('hidden');
+  window.scrollTo({top:0});
+  let step = 0;
+  const t = setInterval(()=>{
+    $('loadingTxt').textContent = LOAD_TXT[Math.min(step, LOAD_TXT.length-1)];
+    step++;
+    if(step > LOAD_TXT.length){ clearInterval(t); showResult(); }
+  }, 520);
+}
+
+function radarSVG(s){
+  const cx=140, cy=140, r=92;
+  const vals = HEX.map(k => Math.max(0.12, s[k]/15));
+  const pt = (i,v) => {
+    const ang = -Math.PI/2 + i*Math.PI/3;
+    return [cx + Math.cos(ang)*r*v, cy + Math.sin(ang)*r*v];
+  };
+  let grid = '';
+  [0.25,0.5,0.75,1].forEach(k=>{
+    const pts = HEX.map((_,i)=> pt(i,k).join(',')).join(' ');
+    grid += `<polygon points="${pts}" fill="none" stroke="#EADFD1" stroke-width="1"/>`;
+  });
+  let axes = '';
+  HEX.forEach((_,i)=>{
+    const [x,y] = pt(i,1);
+    axes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#EADFD1" stroke-width="1"/>`;
+  });
+  const shape = HEX.map((_,i)=> pt(i, vals[i]).join(',')).join(' ');
+  let labels = '';
+  HEX.forEach((k,i)=>{
+    const [x,y] = pt(i,1.24);
+    labels += `<text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" fill="#8B7A6B" font-family="sans-serif">${DIM_NAME[k]}</text>`;
+  });
+  return `<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+    ${grid}${axes}
+    <polygon points="${shape}" fill="rgba(217,119,66,.22)" stroke="#D97742" stroke-width="2" stroke-linejoin="round"/>
+    ${HEX.map((_,i)=>{const [x,y]=pt(i,vals[i]);return `<circle cx="${x}" cy="${y}" r="3.5" fill="#D97742"/>`}).join('')}
+    ${labels}
+  </svg>`;
+}
+
+function showResult(){
+  const r = compute();
+  const t = TYPES[r.code] || TYPES['R-I'];
+  const a = ANCHOR[r.anchor];
+
+  const tension = r.dist === 3
+    ? `<div class="tension"><b>还有一件事值得你知道：</b>你的兴趣里有一股明显的拉扯——你最像「${DIM_NAME[r.dom]}」，但第二强的却是几乎相反方向的「${DIM_NAME[r.sec]}」。这不是缺陷，而是你同时需要两种相反的满足。这类人最容易在“只满足一半”的工作里慢慢失去热情，最好的解法是找一份能同时装下这两面的岗位，或者用副业补上缺的那一半。</div>`
+    : (r.dist === 2
+    ? `<div class="tension"><b>小提示：</b>你的兴趣组合「${DIM_NAME[r.dom]} + ${DIM_NAME[r.sec]}」跨度略大，说明你既能做 A 也能做 B。选工作时不必二选一，重点是别让任何一个长期闲置。</div>`
+    : '');
+
+  $('loading').classList.add('hidden');
+  const el = $('result');
+  el.innerHTML = `
+    <div class="r-kicker">你的职业人格是</div>
+    <div class="r-code">${r.code}</div>
+    <h2 class="r-name">${t.name}</h2>
+    <p class="r-slogan">${t.slogan}</p>
+
+    <div class="panel">
+      <div class="index-row">
+        <div class="index-num">${r.index}<small>/100</small></div>
+        <div class="index-desc"><b>天赋复利指数</b><br>代表你的兴趣浓度、交付稳定性与情绪稳定性之间的匹配程度。分数越高，说明你越容易在合适的位置上“越做越值钱”。</div>
+      </div>
+    </div>
+
+    <div class="panel radar-wrap">
+      <h3 style="align-self:flex-start">你的兴趣结构</h3>
+      ${radarSVG(r.s)}
+      <div class="tags" style="justify-content:center;margin-top:6px">
+        <span class="tag gold">主兴趣 · ${DIM_NAME[r.dom]}</span>
+        <span class="tag">次兴趣 · ${DIM_NAME[r.sec]}</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>你是这样的人</h3>
+      <p>${t.desc}</p>
+    </div>
+
+    <div class="panel">
+      <h3>你的三张底牌</h3>
+      <div class="tags">${t.strengths.map(x=>`<span class="tag gold">${x}</span>`).join('')}</div>
+      <div class="tags" style="margin-top:10px">
+        <span class="tag">${TAG_EXT(r.s.X)}</span>
+        <span class="tag">${TAG_NEU(r.s.N)}</span>
+        <span class="tag">${TAG_OPEN(r.s.O)}</span>
+        <span class="tag">${TAG_AGR(r.s.G)}</span>
+        <span class="tag">${TAG_CON(r.s.D)}</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>你的内在驱动力</h3>
+      <p><b>${a.name}型</b>　${a.line}</p>
+    </div>
+
+    ${tension}
+
+    <div class="panel">
+      <h3>可以优先探索的方向</h3>
+      <div class="career">${t.careers.map(x=>`<span>${x}</span>`).join('')}</div>
+      <p class="tiny" style="margin-top:12px">方向仅为兴趣匹配参考，入职前请结合学历、证书、地域与真实岗位要求判断。</p>
+    </div>
+
+    <div class="two">
+      <div class="col up">
+        <h4>会让你越养越好的工作，长这样</h4>
+        <ul>${t.feed.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+      <div class="col down">
+        <h4>会让你越做越耗的工作，长这样</h4>
+        <ul>${t.drain.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h3>接下来 90 天，做这一件事</h3>
+      <p>${t.action}</p>
+    </div>
+
+    <button class="btn" id="copyBtn" style="margin-top:8px">复制结果文案 · 分享给朋友</button>
+    <button class="btn ghost" id="againBtn" style="margin-top:10px">再测一次</button>
+
+    <div class="foot">
+      <h5>理论依据</h5>
+      <ul>
+        <li>Holland, J. L.《Making Vocational Choices》— RIASEC 职业兴趣六型与六边形结构模型</li>
+        <li>Costa &amp; McCrae — 大五人格模型（NEO-PI-R）</li>
+        <li>Schein, E. H.《Career Anchors》— 职业锚理论</li>
+        <li>Super, D. E. / Savickas, M. L. — 生涯发展与生涯建构理论</li>
+        <li>O*NET 职业信息数据库 — 职业与能力要求的映射参考</li>
+        <li>金树人《生涯咨询与辅导》— 华人语境下的生涯测评应用</li>
+      </ul>
+      <h5 style="margin-top:16px">免责声明</h5>
+      <ul>
+        <li>本测评为大众自我探索工具，题目为上述理论的简化演绎，非标准化心理测量量表，不用于临床诊断或人才选拔。</li>
+        <li>结果反映的是你此刻的倾向，不是终身定论。人的兴趣会随经历变化，建议每 6-12 个月重测。</li>
+        <li>职业选择请综合能力、机会、经济压力与现实条件，结果不构成任何决策承诺。</li>
+      </ul>
+    </div>
+  `;
+  el.classList.remove('hidden');
+  window.scrollTo({top:0});
+
+  $('copyBtn').onclick = () => {
+    const txt = `我的职业人格是「${r.code} ${t.name}」——${t.slogan}\n天赋复利指数 ${r.index}/100。\n${a.line}\n12 种职业人格测评 · 32 题`;
+    navigator.clipboard?.writeText(txt).then(toast, ()=>toast());
+    function toast(){ const d=$('toast'); d.classList.add('on'); setTimeout(()=>d.classList.remove('on'),1600); }
+  };
+  $('againBtn').onclick = () => {
+    cur = 0; ans.fill(null);
+    el.classList.add('hidden');
+    $('cover').classList.remove('hidden');
+    window.scrollTo({top:0});
+  };
+}
+</script>
+</body>
+</html>
